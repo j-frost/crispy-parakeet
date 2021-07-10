@@ -8,15 +8,16 @@ class CrispyParakeet(discord.Client):
             print('message not for me')
             return
 
-        if len(message.split(' ')) < 4:
+        arguments = message.content.split(' ')
+        if len(arguments) < 4:
             await message.channel.send("I don't get it. There's not enough arguments here :?")
             return
 
-        command = message.split(' ')[0]
-        source_voice_channel = message.split(' ')[1]
-        target_1_voice_channel = message.split(' ')[2]
-        target_2_voice_channel = message.split(' ')[3]
+        command = arguments[0]
+        source_voice_channel = arguments[1]
+        target_1_voice_channel = arguments[2]
+        target_2_voice_channel = arguments[3]
 
-        await message.channel.send(f'Alrighty ;) trying to move everyone from {source_voice_channel} randomly into {target_1_voice_channel} and {target_2_voice_channel}')
+        await message.channel.send(f'Alrighty ;) trying to {command} everyone from {source_voice_channel} randomly into {target_1_voice_channel} and {target_2_voice_channel}')
 
         await message.channel.send(f'Should be done now :)')
