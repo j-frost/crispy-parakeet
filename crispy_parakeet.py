@@ -24,6 +24,6 @@ class CrispyParakeet(discord.Client):
         await message.channel.send(f'Alrighty ;) trying to {command} everyone from {source_name} randomly into {target_1_name} and {target_2_name}')
 
         target_1_channel = next(chan for chan in message.guild.voice_channels if chan.name == target_1_name)
-        message.author.move_to(target_1_channel)
+        await message.author.move_to(target_1_channel)
 
         await message.channel.send(f'Should be done now :)')
