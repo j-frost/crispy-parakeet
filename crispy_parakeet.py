@@ -1,8 +1,10 @@
-import discord
-import random
-import numpy
 import asyncio
-from discord import VoiceChannel, Member
+import random
+
+import discord
+import numpy
+from discord import Member, VoiceChannel
+
 
 class CrispyParakeet(discord.Client):
 

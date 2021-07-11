@@ -1,11 +1,14 @@
 import os
+import threading
+
 import discord
 import requests
-from crispy_parakeet import CrispyParakeet
-from quart import Quart, request, jsonify
-import threading
-from discord_interactions import verify_key_decorator
 from google.cloud import logging
+from nacl.exceptions import BadSignatureError
+from nacl.signing import VerifyKey
+from quart import Quart, abort, jsonify, request
+
+from crispy_parakeet import CrispyParakeet
 
 DISCORD_TOKEN = os.getenv('DISCORD_TOKEN')
 APPLICATION_ID = os.getenv('APPLICATION_ID')
@@ -18,8 +21,19 @@ logger = logging.Client().logger('crispy-parakeet')
 
 
 @app.route('/', methods=['POST'])
-@verify_key_decorator(PUBLIC_KEY)
 async def interactions():
+    verify_key = VerifyKey(bytes.fromhex(PUBLIC_KEY))
+
+    signature = request.headers["X-Signature-Ed25519"]
+    timestamp = request.headers["X-Signature-Timestamp"]
+    body = request.data.decode("utf-8")
+
+    try:
+        verify_key.verify(f'{timestamp}{body}'.encode(),
+                          bytes.fromhex(signature))
+    except BadSignatureError:
+        abort(401, 'invalid request signature')
+
     logger.log_struct({
         'message': 'Received interaction',
         'interaction': request.json
