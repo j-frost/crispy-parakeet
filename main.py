@@ -2,7 +2,7 @@ import os
 import discord
 import requests
 from crispy_parakeet import CrispyParakeet
-from flask import Flask, jsonify, abort
+from flask import Flask, jsonify, abort, request
 import threading
 from nacl.signing import VerifyKey
 from nacl.exceptions import BadSignatureError
@@ -17,7 +17,7 @@ crispy_parakeet = CrispyParakeet()
 
 
 @app.route('/', methods=['POST'])
-def handle_command(request):
+def handle_command():
     print(request)
     verify_key = VerifyKey(bytes.fromhex(APPLICATION_PUBLIC_KEY))
 
