@@ -6,6 +6,7 @@ from flask import Flask, jsonify, abort, request
 import threading
 from nacl.signing import VerifyKey
 from nacl.exceptions import BadSignatureError
+from discord_interactions import verify_key_decorator
 
 DISCORD_TOKEN = os.getenv('DISCORD_TOKEN')
 APPLICATION_ID = os.getenv('APPLICATION_ID')
@@ -17,29 +18,25 @@ crispy_parakeet = CrispyParakeet()
 
 
 @app.route('/', methods=['POST'])
-def handle_command():
+@verify_key_decorator(APPLICATION_PUBLIC_KEY)
+def interactions():
     print(request)
-    verify_key = VerifyKey(bytes.fromhex(APPLICATION_PUBLIC_KEY))
-
-    signature = request.headers["X-Signature-Ed25519"]
-    timestamp = request.headers["X-Signature-Timestamp"]
-    body = request.data.decode("utf-8")
-
-    try:
-        verify_key.verify(f'{timestamp}{body}'.encode(), bytes.fromhex(signature))
-    except BadSignatureError:
-        abort(401, 'invalid request signature')
-
     if request.json['type'] == 1:
         return jsonify({
             'type': 1
         })
     else:
+        options = request.json['data']['options']
+        await crispy_parakeet.distribute(
+            next(o for o in options if o.name == 'source').value, 
+            next(o for o in options if o.name == 'team-1').value, 
+            next(o for o in options if o.name == 'team-2').value, 
+        )
         return jsonify({
             'type': 4,
             'data': {
                 'tts': False,
-                'content': 'Congrats on sending your command!',
+                'content': 'You got it!',
                 'embeds': [],
                 'allowed_mentions': {'parse': []}
             }
