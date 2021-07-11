@@ -1,4 +1,3 @@
-import asyncio
 import random
 
 import discord
@@ -13,9 +12,7 @@ class CrispyParakeet(discord.Client):
         channel1 = await self.fetch_channel(chan1)
         channel2 = await self.fetch_channel(chan2)
         [team1, team2] = numpy.array_split(random.shuffle(source.members), 2)
-        asyncio.run(move_all_to(team1, channel1))
-        asyncio.run(move_all_to(team2, channel2))
-
-
-async def move_all_to(members: [Member], channel: VoiceChannel):
-    await asyncio.gather(*[member.move_to(channel) for member in members])
+        for member in team1:
+            await member.move_to(channel1)
+        for member in team2:
+            await member.move_to(channel2)
