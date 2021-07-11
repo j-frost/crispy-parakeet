@@ -7,6 +7,7 @@ import threading
 from nacl.signing import VerifyKey
 from nacl.exceptions import BadSignatureError
 from discord_interactions import verify_key_decorator
+import asyncio
 
 DISCORD_TOKEN = os.getenv('DISCORD_TOKEN')
 APPLICATION_ID = os.getenv('APPLICATION_ID')
@@ -19,7 +20,7 @@ crispy_parakeet = CrispyParakeet()
 
 @app.route('/', methods=['POST'])
 @verify_key_decorator(PUBLIC_KEY)
-async def interactions():
+def interactions():
     print(request)
     if request.json['type'] == 1:
         return jsonify({
@@ -27,10 +28,12 @@ async def interactions():
         })
     else:
         options = request.json['data']['options']
-        await crispy_parakeet.distribute(
-            next(o for o in options if o.name == 'source').value, 
-            next(o for o in options if o.name == 'team-1').value, 
-            next(o for o in options if o.name == 'team-2').value, 
+        asyncio.get_event_loop().run_until_complete(
+            crispy_parakeet.distribute(
+                next(o for o in options if o.name == 'source').value, 
+                next(o for o in options if o.name == 'team-1').value, 
+                next(o for o in options if o.name == 'team-2').value, 
+            )
         )
         return jsonify({
             'type': 4,
