@@ -2,12 +2,9 @@ import os
 import discord
 import requests
 from crispy_parakeet import CrispyParakeet
-from flask import Flask, jsonify, abort, request
+from flask import Flask, jsonify, request
 import threading
-from nacl.signing import VerifyKey
-from nacl.exceptions import BadSignatureError
 from discord_interactions import verify_key_decorator
-import asyncio
 from google.cloud import logging
 
 DISCORD_TOKEN = os.getenv('DISCORD_TOKEN')
@@ -17,12 +14,12 @@ PUBLIC_KEY = os.getenv('APPLICATION_PUBLIC_KEY')
 
 app = Flask(__name__)
 crispy_parakeet = CrispyParakeet()
-loop = asyncio.get_event_loop()
 logger = logging.Client().logger('crispy-parakeet')
+
 
 @app.route('/', methods=['POST'])
 @verify_key_decorator(PUBLIC_KEY)
-def interactions():
+async def interactions():
     logger.log_struct({
         'message': 'Received interaction',
         'interaction': request.json
@@ -33,12 +30,10 @@ def interactions():
         })
     else:
         options = request.json['data']['options']
-        loop.run_until_complete(
-            crispy_parakeet.distribute(
-                next(o for o in options if o['name'] == 'source')['value'], 
-                next(o for o in options if o['name'] == 'team-1')['value'], 
-                next(o for o in options if o['name'] == 'team-2')['value']
-            )
+        await crispy_parakeet.distribute(
+            next(o for o in options if o['name'] == 'source')['value'],
+            next(o for o in options if o['name'] == 'team-1')['value'],
+            next(o for o in options if o['name'] == 'team-2')['value']
         )
         return jsonify({
             'type': 4,
