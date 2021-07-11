@@ -30,9 +30,9 @@ def interactions():
         options = request.json['data']['options']
         loop.run_until_complete(
             crispy_parakeet.distribute(
-                next(o for o in options if o.name == 'source').value, 
-                next(o for o in options if o.name == 'team-1').value, 
-                next(o for o in options if o.name == 'team-2').value, 
+                next(o for o in options if o['name'] == 'source')['value'], 
+                next(o for o in options if o['name'] == 'team-1')['value'], 
+                next(o for o in options if o['name'] == 'team-2')['value']
             )
         )
         return jsonify({
