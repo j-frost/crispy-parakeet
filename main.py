@@ -10,7 +10,7 @@ from discord_interactions import verify_key_decorator
 
 DISCORD_TOKEN = os.getenv('DISCORD_TOKEN')
 APPLICATION_ID = os.getenv('APPLICATION_ID')
-APPLICATION_PUBLIC_KEY = os.getenv('APPLICATION_PUBLIC_KEY')
+PUBLIC_KEY = os.getenv('APPLICATION_PUBLIC_KEY')
 
 
 app = Flask(__name__)
@@ -18,8 +18,8 @@ crispy_parakeet = CrispyParakeet()
 
 
 @app.route('/', methods=['POST'])
-@verify_key_decorator(APPLICATION_PUBLIC_KEY)
-def interactions():
+@verify_key_decorator(PUBLIC_KEY)
+async def interactions():
     print(request)
     if request.json['type'] == 1:
         return jsonify({
