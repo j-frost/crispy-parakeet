@@ -29,21 +29,25 @@ async def interactions():
     body = (await request.data).decode("utf-8")
 
     try:
-        verify_key.verify(f'{timestamp}{body}'.encode(),
-                          bytes.fromhex(signature))
+        verify_key.verify(
+            f'{timestamp}{body}'.encode(),
+            bytes.fromhex(signature)
+        )
     except BadSignatureError:
         abort(401, 'invalid request signature')
 
+    interaction_json = await request.json
+
     logger.log_struct({
         'message': 'Received interaction',
-        'interaction': request.json
+        'interaction': interaction_json
     })
-    if request.json['type'] == 1:
+    if interaction_json['type'] == 1:
         return jsonify({
             'type': 1
         })
     else:
-        options = request.json['data']['options']
+        options = interaction_json['data']['options']
         await crispy_parakeet.distribute(
             next(o for o in options if o['name'] == 'source')['value'],
             next(o for o in options if o['name'] == 'team-1')['value'],
