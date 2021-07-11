@@ -15,12 +15,12 @@ APPLICATION_ID = os.getenv('APPLICATION_ID')
 PUBLIC_KEY = os.getenv('APPLICATION_PUBLIC_KEY')
 
 
-app = Quart(__name__)
+web_app = Quart(__name__)
 crispy_parakeet = CrispyParakeet()
 logger = logging.Client().logger('crispy-parakeet')
 
 
-@app.route('/', methods=['POST'])
+@web_app.route('/', methods=['POST'])
 async def interactions():
     verify_key = VerifyKey(bytes.fromhex(PUBLIC_KEY))
 
@@ -94,12 +94,12 @@ def register_commands():
 
 
 if __name__ == '__main__':
-    daemon = threading.Thread(
-        name='bogus web server',
-        target=app.run,
-        kwargs={'host': '0.0.0.0', 'port': int(os.environ.get('PORT', 8080))}
+    client_daemon = threading.Thread(
+        name='crispy parakeet bot client',
+        target=crispy_parakeet.run,
+        args=(DISCORD_TOKEN)
     )
-    daemon.setDaemon(True)
-    daemon.start()
+    client_daemon.setDaemon(True)
+    client_daemon.start()
     register_commands()
-    crispy_parakeet.run(DISCORD_TOKEN)
+    web_app.run(host='0.0.0.0', port=int(os.environ.get('PORT', 8080)))
