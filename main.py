@@ -16,7 +16,7 @@ PUBLIC_KEY = os.getenv('APPLICATION_PUBLIC_KEY')
 
 app = Flask(__name__)
 crispy_parakeet = CrispyParakeet()
-
+loop = asyncio.get_event_loop()
 
 @app.route('/', methods=['POST'])
 @verify_key_decorator(PUBLIC_KEY)
@@ -28,7 +28,7 @@ def interactions():
         })
     else:
         options = request.json['data']['options']
-        asyncio.get_event_loop().run_until_complete(
+        loop.run_until_complete(
             crispy_parakeet.distribute(
                 next(o for o in options if o.name == 'source').value, 
                 next(o for o in options if o.name == 'team-1').value, 

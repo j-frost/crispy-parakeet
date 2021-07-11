@@ -12,5 +12,5 @@ class CrispyParakeet(discord.Client):
         asyncio.run(move_all_to(team2, channel2))
 
 
-async def move_all_to(members:[Member], channel: VoiceChannel):
+async def move_all_to(members: [Member], channel: VoiceChannel):
     await asyncio.gather(*[member.move_to(channel) for member in members])
