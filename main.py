@@ -2,7 +2,7 @@ import os
 import discord
 import requests
 from crispy_parakeet import CrispyParakeet
-from flask import Flask, jsonify, request
+from flask import Flask, request
 import threading
 from discord_interactions import verify_key_decorator
 from google.cloud import logging
@@ -25,9 +25,9 @@ async def interactions():
         'interaction': request.json
     })
     if request.json['type'] == 1:
-        return jsonify({
+        return {
             'type': 1
-        })
+        }
     else:
         options = request.json['data']['options']
         await crispy_parakeet.distribute(
@@ -35,7 +35,7 @@ async def interactions():
             next(o for o in options if o['name'] == 'team-1')['value'],
             next(o for o in options if o['name'] == 'team-2')['value']
         )
-        return jsonify({
+        return {
             'type': 4,
             'data': {
                 'tts': False,
@@ -43,7 +43,7 @@ async def interactions():
                 'embeds': [],
                 'allowed_mentions': {'parse': []}
             }
-        })
+        }
 
 
 def register_commands():
