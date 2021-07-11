@@ -14,10 +14,16 @@ class CrispyParakeet(discord.Client):
             return
 
         command = arguments[1]
-        source_voice_channel = arguments[2]
-        target_1_voice_channel = arguments[3]
-        target_2_voice_channel = arguments[4]
+        if command != 'move':
+            await message.channel.send(f"Sorry, I don't understand what I have to do when you say {command}")
 
-        await message.channel.send(f'Alrighty ;) trying to {command} everyone from {source_voice_channel} randomly into {target_1_voice_channel} and {target_2_voice_channel}')
+        source_name = arguments[2]
+        target_1_name = arguments[3]
+        target_2_name = arguments[4]
+
+        await message.channel.send(f'Alrighty ;) trying to {command} everyone from {source_name} randomly into {target_1_name} and {target_2_name}')
+
+        target_1_channel = next(chan for chan in message.guild.voice_channels if chan.name == target_1_name)
+        message.author.move_to(target_1_channel)
 
         await message.channel.send(f'Should be done now :)')
