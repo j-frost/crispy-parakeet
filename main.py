@@ -18,6 +18,7 @@ crispy_parakeet = CrispyParakeet()
 
 @app.route('/', methods=['POST'])
 def handle_command(request):
+    print(request)
     verify_key = VerifyKey(bytes.fromhex(APPLICATION_PUBLIC_KEY))
 
     signature = request.headers["X-Signature-Ed25519"]
