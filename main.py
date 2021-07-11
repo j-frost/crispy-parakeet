@@ -26,7 +26,7 @@ async def interactions():
 
     signature = request.headers["X-Signature-Ed25519"]
     timestamp = request.headers["X-Signature-Timestamp"]
-    body = request.data.decode("utf-8")
+    body = (await request.data).decode("utf-8")
 
     try:
         verify_key.verify(f'{timestamp}{body}'.encode(),
