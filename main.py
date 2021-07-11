@@ -8,6 +8,7 @@ from nacl.signing import VerifyKey
 from nacl.exceptions import BadSignatureError
 from discord_interactions import verify_key_decorator
 import asyncio
+from google.cloud import logging
 
 DISCORD_TOKEN = os.getenv('DISCORD_TOKEN')
 APPLICATION_ID = os.getenv('APPLICATION_ID')
@@ -17,11 +18,15 @@ PUBLIC_KEY = os.getenv('APPLICATION_PUBLIC_KEY')
 app = Flask(__name__)
 crispy_parakeet = CrispyParakeet()
 loop = asyncio.get_event_loop()
+logger = logging.Client().logger('crispy-parakeet')
 
 @app.route('/', methods=['POST'])
 @verify_key_decorator(PUBLIC_KEY)
 def interactions():
-    print(request)
+    logger.log_struct({
+        'message': 'Received interaction',
+        'interaction': request.json
+    })
     if request.json['type'] == 1:
         return jsonify({
             'type': 1
@@ -76,7 +81,7 @@ def register_commands():
         }
     )
     if response.status_code not in range(200, 300):
-        raise Exception(response)
+        raise Exception(response.content)
 
 
 if __name__ == '__main__':
