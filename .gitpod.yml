@@ -1,6 +1,7 @@
 tasks:
-  - init: pip install -r requirements.txt
-  - command: python main.py
+  - name: Running bot
+    init: pip install -r requirements.txt
+    command: python main.py
 
 image:
   file: .gitpod.Dockerfile
