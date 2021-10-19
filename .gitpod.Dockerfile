@@ -24,7 +24,7 @@ ARG GCLOUD_CONFIG_DIR=/home/gitpod/.config/gcloud
 COPY --chown=gitpod gcloud-default-config $GCLOUD_CONFIG_DIR/configurations/config_default
 
 # Set Application Default Credentials (ADC) based on user-provided env var
-RUN echo ". /workspace/gitpod/scripts/setup-google-adc.sh" >> ~/.bashrc
+RUN echo ". /workspace/crispy-parakeet/scripts/setup-google-adc.sh" >> ~/.bashrc
 
 # Install latest python 3.9
 RUN git clone https://github.com/momo-lab/xxenv-latest.git "$(pyenv root)"/plugins/xxenv-latest \
