@@ -27,5 +27,7 @@ COPY --chown=gitpod gcloud-default-config $GCLOUD_CONFIG_DIR/configurations/conf
 RUN echo ". /workspace/gitpod/scripts/setup-google-adc.sh" >> ~/.bashrc
 
 # Install latest python 3.9
-RUN git clone https://github.com/momo-lab/xxenv-latest.git "$(pyenv root)"/plugins/xxenv-latest 
-RUN pyenv latest install 3.9
+RUN git clone https://github.com/momo-lab/xxenv-latest.git "$(pyenv root)"/plugins/xxenv-latest \
+    pyenv update \
+    pyenv latest install 3.9 \
+    pyenv latest global 3.9
