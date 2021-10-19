@@ -6,7 +6,7 @@
 #  4. Go to https://gitpod.io/settings/ and create:
 #     - name: GCP_ADC_FILE
 #     - value: paste-the-output
-#     - repo: gitpod-io/gitpod
+#     - repo: j-frost/crispy-parakeet
 
 GCLOUD_ADC_PATH="/home/gitpod/.config/gcloud/application_default_credentials.json"
 

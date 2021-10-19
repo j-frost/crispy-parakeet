@@ -17,7 +17,7 @@ PUBLIC_KEY = os.getenv('APPLICATION_PUBLIC_KEY')
 
 web_app = Quart(__name__)
 crispy_parakeet = CrispyParakeet()
-logger = logging.Client().logger('crispy-parakeet')
+logger = logging.Client(project='crispy-parakeet').logger('crispy-parakeet')
 
 
 @web_app.route('/', methods=['POST'])
